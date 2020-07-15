@@ -7,9 +7,6 @@ from scipy.signal import hilbert
 from scipy.stats import circmean,circstd
 #import random
 
-#datadir= '../../Orientations/ImpulseResponses/'
-#datadir= '../../CCFs/'
-#datadir= "F:/Dropbox_offload_2018/Orientations/ImpulseResponses/"
 datadir= "C:/Users/josia/Dropbox/AmbientSeismicNoiseProject/MinDayReq/2/"
 
 def readandfold(dir, station, orienstation):
@@ -32,7 +29,7 @@ def readandfold(dir, station, orienstation):
     npts2 = st[0].stats.npts
     npts = int((npts2-1)/2)
 
-    # Fold the CCFs to improve SNR (make optional?):
+    # Fold the CCFs to improve SNR:
     st_folded= st.copy()
     for i_,tr in enumerate(st):
         causal =  st[i_].data[npts:-1]
@@ -75,7 +72,6 @@ for orienstation in net:
 
                 # rotating CLOCKWISE, correlating with ZZ90:
                 maxSrz= []
-                #coherences=[]
                 thetas = np.linspace(0,2*np.pi,360)
                 for i_,theta in enumerate(thetas):
                     RZ_rot =  np.cos(theta)*RZ - np.sin(theta)*TZ
@@ -84,30 +80,22 @@ for orienstation in net:
                     #Stz = np.correlate(TZ_rot, ZZ90)
                     Szz = np.correlate(ZZ90, ZZ90)
                     maxSrz.append(max(Srz)/max(Szz))
-                    #Rrz =np.corrcoef(RZ_rot,ZZ90)
-                    #coherences.append(Rrz[0][1])
 
                 # find the angle with the maximum correlation:
                 maxmaxSrz= max(maxSrz)
                 rotangle_index = maxSrz.index(maxmaxSrz)
-                #coherence=coherences[maxSrz.index(maxmaxSrz)]
                 rotangle = thetas[rotangle_index]
 
                 # MSNOISE pre-rotated, based on order of the station pair:
                 if not flag:
                     rotangle = rotangle - np.pi
                 
-                # a crude hard cutoff at max corr of 0.3. May have to
-                # refine this. Weighted average?
-#                if  maxmaxSrz > 0.03:
-                angles.append(rotangle)
+                # only use estimates with a max correlation larger than 0.3
+                if  maxmaxSrz > 0.3:
+                    angles.append(rotangle)
                     
         # calculate and print the (rounded) circular mean/std:
-#        angle_rand=[random.choice(angles),random.choice(angles),random.choice(angles),random.choice(angles),random.choice(angles)]
         circmeanangle = int(np.round(circmean(np.unwrap(angles))*180/np.pi))
         circmeanstd = int(np.round(circstd(np.unwrap(angles))*180/np.pi))
         print(orienstation.code, circmeanangle,circmeanstd, len(angles))
-#        for angle in angles:
-#            print(angle*180/np.pi)
-
-        
+    
