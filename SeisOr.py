@@ -1,11 +1,8 @@
 from obspy.core.inventory.inventory import read_inventory
 from obspy import read
-#import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import hilbert
-#from obspy.geodetics.base import gps2dist_azimuth
 from scipy.stats import circmean,circstd
-#import random
 
 datadir= "C:/Users/josia/Dropbox/AmbientSeismicNoiseProject/MinDayReq/2/"
 
