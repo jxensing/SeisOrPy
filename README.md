@@ -8,3 +8,6 @@ The method is slightly modified after Zha, Y., S. C. Webb, and W. Menke (2013). 
 using ambient noise correlation, Geophys. Res. Lett. 40, no. 14, 3585–3590.
 
 To try it out, download the SeisOrPy folder, and unzip ImpulseResponses.zip, and run SeisOr.py
+
+It will require the following python packages obspy, numpy, and scipy
+
